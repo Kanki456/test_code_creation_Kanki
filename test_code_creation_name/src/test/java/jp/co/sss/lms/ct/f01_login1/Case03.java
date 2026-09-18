@@ -65,7 +65,7 @@ public class Case03 {
 		driver.findElement(By.name("loginId")).clear();
 
 		driver.findElement(By.name("loginId")).sendKeys("StudentAA01");
-		driver.findElement(By.name("password")).sendKeys("StudentAA01");
+		driver.findElement(By.name("password")).sendKeys("ItTest2026");
 		driver.findElement(By.className("btn-primary")).click();
 
 		// タイトル 一致確認
