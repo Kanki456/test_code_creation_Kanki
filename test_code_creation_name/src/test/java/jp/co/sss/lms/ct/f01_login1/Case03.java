@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能①
@@ -18,6 +23,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース03 受講生 ログイン 正常系")
 public class Case03 {
+
+	// ポート番号8080番
+	private final int PORT = 8080;
+
+	/** Driver */
+	private WebDriver driver = WebDriverUtils.webDriver;
 
 	/** 前処理 */
 	@BeforeAll
@@ -35,14 +46,34 @@ public class Case03 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		goTo("http://localhost:" + PORT + "/lms");
+		// タイトル 一致確認
+		assertEquals("ログイン | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("ログイン", driver.findElement(By.tagName("h2")).getText());
+		// ログインボタン 一致確認
+		assertEquals("ログイン", driver.findElement(By.className("btn-primary")).getAttribute("value"));
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+		// ログインIDの入力欄を空白にしておく
+		driver.findElement(By.name("loginId")).clear();
+
+		driver.findElement(By.name("loginId")).sendKeys("StudentAA01");
+		driver.findElement(By.name("password")).sendKeys("StudentAA01");
+		driver.findElement(By.className("btn-primary")).click();
+
+		// タイトル 一致確認
+		assertEquals("コース詳細 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("DEMOコース 2026年9月1日(火)～2026年9月30日(水)", driver.findElement(By.tagName("h2")).getText());
+		getEvidence(new Object() {
+		});
 	}
 
 }
