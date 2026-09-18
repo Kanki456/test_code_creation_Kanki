@@ -59,7 +59,7 @@ public class Case02 {
 
 	@Test
 	@Order(2)
-	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
+	@DisplayName("テスト02_1 DBに登録されていないユーザーでログイン（ログインIDとパスワードの未登録）")
 	void test02_1() {
 		// ログインIDの入力欄を空白にしておく
 		driver.findElement(By.name("loginId")).clear();
@@ -82,7 +82,7 @@ public class Case02 {
 
 	@Test
 	@Order(3)
-	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
+	@DisplayName("テスト02_2 DBに登録されていないユーザーでログイン（ログインIDとパスワードの不一致）")
 	void test02_2() {
 		// ログインIDの入力欄を空白にしておく
 		driver.findElement(By.name("loginId")).clear();
