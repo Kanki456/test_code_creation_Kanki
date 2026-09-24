@@ -134,7 +134,7 @@ public class Case05 {
 		driver.findElement(By.className("form-control")).clear();
 
 		driver.findElement(By.className("form-control")).sendKeys("研修");
-		driver.findElement(By.className("btn-primary")).click();
+		driver.findElements(By.className("btn-primary")).get(0).click();
 
 		pageLoadTimeout(50);
 		// 入力キーワード 一致確認
@@ -161,7 +161,15 @@ public class Case05 {
 	@Order(6)
 	@DisplayName("テスト06 「クリア」ボタン押下で入力したキーワードを消去")
 	void test06() {
-		// TODO ここに追加
+		scrollTo("0");
+		driver.findElements(By.className("btn-primary")).get(1).click();
+
+		pageLoadTimeout(50);
+		// 入力キーワード 一致確認
+		assertEquals("", driver.findElement(By.className("form-control")).getAttribute("value"));
+		// 入力キーワードの結果
+		getEvidence(new Object() {
+		});
 	}
 
 }
