@@ -156,7 +156,31 @@ public class Case06 {
 	@Order(6)
 	@DisplayName("テスト06 検索結果の質問をクリックしその回答を表示")
 	void test06() {
-		// TODO ここに追加
+
+		List<WebElement> dtElements = driver.findElements(By.tagName("dt"));
+		List<WebElement> ddElements = driver.findElements(By.tagName("dd"));
+		// スクロールせず確認するために、下から順にクリックする
+		dtElements.get(2).click();
+		dtElements.get(1).click();
+		dtElements.get(0).click();
+
+		pageLoadTimeout(50);
+		assertEquals(
+				"労働者にジョブカードを活用した、キャリアコンサルタントによるキャリアコンサルティングを定期的に提供するものです。 なお、セルフ・キャリアドック制度を就業規則または労働協約に規定し、また、「セルフ・キャリアドック実施計画書」の作成が別途必要となります。",
+				ddElements.get(0).findElements(By.tagName("span")).get(1).getText());
+		assertEquals(
+				"以前は変更申請の必要がございましたが、2020年4月～は変更届の必要がなくなりました。",
+				ddElements.get(1).findElements(By.tagName("span")).get(1).getText());
+		assertEquals(
+				"LMSマニュアルを参考に、LMSから助成金の書類をダウンロードしてください。 手引きもご用意させていただいておりますので、必ずご一読ください。 ダウンロードした助成金の書類には、基本的な御社の情報・研修情報が予め記載されております。 ご不明な点がございましたら、営業担当または東京ITスクール運営事務局までご連絡ください。",
+				ddElements.get(2).findElements(By.tagName("span")).get(1).getText());
+
+		getEvidence(new Object() {
+		}, "1");
+		// 回答の内容がスクショ範囲に収まるようにスクロール
+		scrollTo("600");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 }
