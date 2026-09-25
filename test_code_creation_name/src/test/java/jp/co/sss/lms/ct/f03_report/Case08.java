@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f03_report;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト レポート機能
@@ -18,6 +23,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース08 受講生 レポート修正(週報) 正常系")
 public class Case08 {
+
+	// ポート番号8080番
+	private final int PORT = 8080;
+
+	/** Driver */
+	private WebDriver driver = WebDriverUtils.webDriver;
 
 	/** 前処理 */
 	@BeforeAll
@@ -35,21 +46,59 @@ public class Case08 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		goTo("http://localhost:" + PORT + "/lms");
+		// タイトル 一致確認
+		assertEquals("ログイン | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("ログイン", driver.findElement(By.tagName("h2")).getText());
+		// ログインボタン 一致確認
+		assertEquals("ログイン", driver.findElement(By.className("btn-primary")).getAttribute("value"));
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+		// ログインIDの入力欄を空白にしておく
+		driver.findElement(By.name("loginId")).clear();
+
+		driver.findElement(By.name("loginId")).sendKeys("StudentAA01");
+		driver.findElement(By.name("password")).sendKeys("ItTest2026");
+		driver.findElement(By.className("btn-primary")).click();
+
+		pageLoadTimeout(50);
+		// タイトル 一致確認
+		assertEquals("コース詳細 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("DEMOコース 2026年9月1日(火)～2026年9月30日(水)", driver.findElement(By.tagName("h2")).getText());
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("テスト03 提出済の研修日の「詳細」ボタンを押下しセクション詳細画面に遷移")
 	void test03() {
-		// TODO ここに追加
+		// 9月2日の詳細ボタンをクリック　※2日目なのでget(1)
+		// 週報を提出済みである必要がある
+		driver.findElements(By.cssSelector("input[type='submit'][value='詳細']")).get(1).click();
+
+		pageLoadTimeout(50);
+		// タイトル 一致確認
+		assertEquals("セクション詳細 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("アルゴリズム、フローチャート 2026年9月2日", driver.findElement(By.tagName("h2")).getText());
+		// 週報提出/確認ボタン 一致確認　※3つ目のボタンなのでget(2)
+		assertEquals("提出済み週報【デモ】を確認する",
+				driver.findElements(By.cssSelector("input[type='submit']")).get(2).getAttribute("value"));
+		getEvidence(new Object() {
+		}, "1");
+		// 結果がスクショ範囲に収まるようにスクロール
+		scrollTo("200");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
