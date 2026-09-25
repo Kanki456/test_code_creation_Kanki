@@ -129,7 +129,30 @@ public class Case08 {
 	@Order(5)
 	@DisplayName("テスト05 報告内容を修正して「提出する」ボタンを押下しセクション詳細画面に遷移")
 	void test05() {
-		// TODO ここに追加
+		// 学習項目と所感を空白にしておく
+		scrollTo("0");
+		driver.findElement(By.id("intFieldName_0")).clear();
+		driver.findElement(By.id("content_1")).clear();
+		// 学習項目に「修正後」、所感に「修正後です」を入力してから提出するボタンをクリック
+		driver.findElement(By.id("intFieldName_0")).sendKeys("修正後");
+		driver.findElement(By.id("content_1")).sendKeys("修正後です");
+		scrollTo("400");
+		driver.findElement(By.className("btn-primary")).click();
+		
+		pageLoadTimeout(50);
+		// タイトル 一致確認
+		assertEquals("セクション詳細 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("アルゴリズム、フローチャート 2026年9月2日", driver.findElement(By.tagName("h2")).getText());
+		// 週報提出/確認ボタン 一致確認　※3つ目のボタンなのでget(2)
+		assertEquals("提出済み週報【デモ】を確認する",
+				driver.findElements(By.cssSelector("input[type='submit']")).get(2).getAttribute("value"));
+		getEvidence(new Object() {
+		}, "1");
+		// 結果がスクショ範囲に収まるようにスクロール
+		scrollTo("200");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
