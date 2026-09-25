@@ -137,7 +137,7 @@ public class Case08 {
 		driver.findElement(By.id("content_1")).sendKeys("修正後です");
 		scrollTo("400");
 		driver.findElement(By.className("btn-primary")).click();
-		
+
 		pageLoadTimeout(50);
 		// タイトル 一致確認
 		assertEquals("セクション詳細 | LMS", driver.getTitle());
@@ -160,7 +160,7 @@ public class Case08 {
 	void test06() {
 		// aタグの「ようこそ受講生ＡＡ１さん」リンクをクリック
 		driver.findElement(By.linkText("ようこそ受講生ＡＡ１さん")).click();
-		
+
 		pageLoadTimeout(50);
 		// タイトル 一致確認
 		assertEquals("ユーザー詳細", driver.getTitle());
@@ -187,7 +187,31 @@ public class Case08 {
 	@Order(7)
 	@DisplayName("テスト07 該当レポートの「詳細」ボタンを押下しレポート詳細画面で修正内容が反映される")
 	void test07() {
-		// TODO ここに追加
+		// 該当レポートの詳細ボタンをクリック
+		driver.findElement(
+				By.cssSelector("form[action='/lms/report/detail']:has(input[value='6']) input[type='submit']")).click();
+		
+		pageLoadTimeout(50);
+		// タイトル 一致確認
+		assertEquals("レポート詳細 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("週報【デモ】 2026年9月2日", driver.findElement(By.tagName("h2")).getText());
+
+		// 2つ目のtable-hoverクラスから、
+		// 2つ目のtrタグ中の、1つ目のtdタグ中の、pタグ中のテキストを代入
+		String text1 = driver.findElements(By.className("table-hover")).get(1)
+				.findElement(By.cssSelector("table tr:nth-child(2) td:nth-child(1) p")).getText();
+		// 学習項目 一致確認
+		assertEquals("修正後", text1);
+
+		// 3つ目のtable-hoverクラスから、
+		// 2つ目のtrタグ中の、tdタグ中のテキストを代入
+		String text2 = driver.findElements(By.className("table-hover")).get(2)
+				.findElement(By.cssSelector("table tr:nth-child(2) td")).getText();
+		// 所感 一致確認
+		assertEquals("修正後です", text2);
+		getEvidence(new Object() {
+		});
 	}
 
 }
