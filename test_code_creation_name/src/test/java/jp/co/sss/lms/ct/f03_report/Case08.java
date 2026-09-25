@@ -105,7 +105,24 @@ public class Case08 {
 	@Order(4)
 	@DisplayName("テスト04 「確認する」ボタンを押下しレポート登録画面に遷移")
 	void test04() {
-		// TODO ここに追加
+		// 提出済み週報【デモ】を確認するボタンをクリック
+		// 提出済みである必要がある
+		driver.findElement(By.cssSelector("input[type='submit'][value='提出済み週報【デモ】を確認する']")).click();
+
+		pageLoadTimeout(50);
+		// タイトル 一致確認
+		assertEquals("レポート登録 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("週報【デモ】 2026年9月2日", driver.findElement(By.tagName("h2")).getText());
+		// 提出ボタン 一致確認
+		assertEquals("提出する", driver.findElement(By.cssSelector("button[type='submit']")).getText());
+		scrollTo("0");
+		getEvidence(new Object() {
+		}, "1");
+		// 結果がスクショ範囲に収まるようにスクロール
+		scrollTo("400");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
