@@ -130,7 +130,6 @@ public class Case08 {
 	@DisplayName("テスト05 報告内容を修正して「提出する」ボタンを押下しセクション詳細画面に遷移")
 	void test05() {
 		// 学習項目と所感を空白にしておく
-		scrollTo("0");
 		driver.findElement(By.id("intFieldName_0")).clear();
 		driver.findElement(By.id("content_1")).clear();
 		// 学習項目に「修正後」、所感に「修正後です」を入力してから提出するボタンをクリック
@@ -159,7 +158,29 @@ public class Case08 {
 	@Order(6)
 	@DisplayName("テスト06 上部メニューの「ようこそ○○さん」リンクからユーザー詳細画面に遷移")
 	void test06() {
-		// TODO ここに追加
+		// aタグの「ようこそ受講生ＡＡ１さん」リンクをクリック
+		driver.findElement(By.linkText("ようこそ受講生ＡＡ１さん")).click();
+		
+		pageLoadTimeout(50);
+		// タイトル 一致確認
+		assertEquals("ユーザー詳細", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("ユーザー詳細", driver.findElement(By.tagName("h2")).getText());
+		// 1つ目のh3タグ 一致確認
+		assertEquals("基本情報", driver.findElements(By.tagName("h3")).get(0).getText());
+		// 2つ目のh3タグ 一致確認
+		assertEquals("試験", driver.findElements(By.tagName("h3")).get(1).getText());
+		// 3つ目のh3タグ 一致確認
+		assertEquals("レポート", driver.findElements(By.tagName("h3")).get(2).getText());
+		getEvidence(new Object() {
+		}, "1");
+		// 結果がスクショ範囲に収まるようにスクロール
+		scrollTo("300");
+		getEvidence(new Object() {
+		}, "2");
+		scrollTo("600");
+		getEvidence(new Object() {
+		}, "3");
 	}
 
 	@Test
