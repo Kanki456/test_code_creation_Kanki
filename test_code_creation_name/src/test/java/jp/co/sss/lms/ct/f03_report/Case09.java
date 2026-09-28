@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import jp.co.sss.lms.ct.util.WebDriverUtils;
 
@@ -68,7 +69,7 @@ public class Case09 {
 		driver.findElement(By.name("password")).sendKeys("ItTest2026");
 		driver.findElement(By.className("btn-primary")).click();
 
-		pageLoadTimeout(50);
+		visibilityTimeout(By.className("navbar-header"), 500);
 		// タイトル 一致確認
 		assertEquals("コース詳細 | LMS", driver.getTitle());
 		// h2タグ 一致確認
@@ -84,7 +85,7 @@ public class Case09 {
 		// aタグの「ようこそ受講生ＡＡ１さん」リンクをクリック
 		driver.findElement(By.linkText("ようこそ受講生ＡＡ１さん")).click();
 
-		pageLoadTimeout(50);
+		visibilityTimeout(By.className("navbar-header"), 500);
 		// タイトル 一致確認
 		assertEquals("ユーザー詳細", driver.getTitle());
 		// h2タグ 一致確認
@@ -117,7 +118,7 @@ public class Case09 {
 						"form[action='/lms/report/regist']:has(input[value='6']) input[type='submit'][value='修正する']"))
 				.click();
 
-		pageLoadTimeout(50);
+		visibilityTimeout(By.className("navbar-header"), 500);
 		// タイトル 一致確認
 		assertEquals("レポート登録 | LMS", driver.getTitle());
 		// h2タグ 一致確認
@@ -136,7 +137,39 @@ public class Case09 {
 	@Order(5)
 	@DisplayName("テスト05 報告内容を修正して「提出する」ボタンを押下しエラー表示：学習項目が未入力")
 	void test05() {
-		// TODO ここに追加
+		// プルダウンを選択するためにSelectクラスを使用
+		final Select select = new Select(driver.findElement(By.id("intFieldValue_0")));
+		// 学習項目を空白にしておく
+		driver.findElement(By.id("intFieldName_0")).clear();
+		// select 要素の、テキストが「」の option 要素を選択する 
+		select.selectByVisibleText("");
+		// 目標の達成度／所感／一週間の振り返り をそれぞれ空白にしておく
+		driver.findElement(By.id("content_0")).clear();
+		driver.findElement(By.id("content_1")).clear();
+		driver.findElement(By.id("content_2")).clear();
+
+		// 仕様書で示した入力値をそれぞれ入力する
+		select.selectByVisibleText("2");
+		driver.findElement(By.id("content_0")).sendKeys("5");
+		driver.findElement(By.id("content_1")).sendKeys("修正後です");
+		scrollTo("400");
+		driver.findElement(By.className("btn-primary")).click();
+
+		visibilityTimeout(By.className("navbar-header"), 500);
+		// タイトル 一致確認
+		assertEquals("レポート登録 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("週報【デモ】 2026年9月2日", driver.findElement(By.tagName("h2")).getText());
+		// 学習項目テキストボックス 一致確認（errorInput）
+		assertTrue(driver.findElement(By.id("intFieldName_0")).getAttribute("class").contains("errorInput"));
+		// 提出ボタン 一致確認
+		assertEquals("提出する", driver.findElement(By.className("btn-primary")).getText());
+		getEvidence(new Object() {
+		}, "1");
+		// 結果がスクショ範囲に収まるようにスクロール
+		scrollTo("600");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
