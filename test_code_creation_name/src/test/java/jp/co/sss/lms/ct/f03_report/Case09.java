@@ -215,7 +215,40 @@ public class Case09 {
 	@Order(7)
 	@DisplayName("テスト07 不適切な内容で修正して「提出する」ボタンを押下しエラー表示：目標の達成度が数値以外")
 	void test07() {
-		// TODO ここに追加
+		// プルダウンを選択するためにSelectクラスを使用
+		final Select select = new Select(driver.findElement(By.id("intFieldValue_0")));
+		// 学習項目を空白にしておく
+		driver.findElement(By.id("intFieldName_0")).clear();
+		// select 要素の、テキストが「」の option 要素を選択する 
+		select.selectByVisibleText("");
+		// 目標の達成度／所感／一週間の振り返り をそれぞれ空白にしておく
+		driver.findElement(By.id("content_0")).clear();
+		driver.findElement(By.id("content_1")).clear();
+		driver.findElement(By.id("content_2")).clear();
+
+		// 仕様書で示した入力値をそれぞれ入力する
+		driver.findElement(By.id("intFieldName_0")).sendKeys("修正後");
+		select.selectByVisibleText("2");
+		driver.findElement(By.id("content_0")).sendKeys("五");
+		driver.findElement(By.id("content_1")).sendKeys("修正後です");
+		scrollTo("400");
+		driver.findElement(By.className("btn-primary")).click();
+
+		visibilityTimeout(By.className("navbar-header"), 500);
+		// タイトル 一致確認
+		assertEquals("レポート登録 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("週報【デモ】 2026年9月2日", driver.findElement(By.tagName("h2")).getText());
+		// 目標の達成度テキストボックス 一致確認（errorInput）
+		assertTrue(driver.findElement(By.id("content_0")).getAttribute("class").contains("errorInput"));
+		// 提出ボタン 一致確認
+		assertEquals("提出する", driver.findElement(By.className("btn-primary")).getText());
+		getEvidence(new Object() {
+		}, "1");
+		// 結果がスクショ範囲に収まるようにスクロール
+		scrollTo("600");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
