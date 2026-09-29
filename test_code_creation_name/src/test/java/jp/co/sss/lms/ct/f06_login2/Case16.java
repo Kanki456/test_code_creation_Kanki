@@ -72,9 +72,9 @@ public class Case16 {
 		// ログインIDの入力欄を空白にしておく
 		driver.findElement(By.name("loginId")).clear();
 
-		// ☆動作確認用 後で変える
-		driver.findElement(By.name("loginId")).sendKeys("StudentBD05");
-		driver.findElement(By.name("password")).sendKeys("StudentBD05");
+		// 未ログインの受講生ユーザーでログイン
+		driver.findElement(By.name("loginId")).sendKeys("StudentBD07");
+		driver.findElement(By.name("password")).sendKeys("StudentBD07");
 		driver.findElement(By.className("btn-primary")).click();
 
 		visibilityTimeout(By.className("navbar-header"), 500);
@@ -86,7 +86,6 @@ public class Case16 {
 		assertEquals("次へ", driver.findElement(By.className("btn-primary")).getText());
 		getEvidence(new Object() {
 		}, "1");
-		// 検索結果がスクショ範囲に収まるようにスクロール
 		scrollTo("300");
 		getEvidence(new Object() {
 		}, "2");
@@ -112,7 +111,6 @@ public class Case16 {
 		assertEquals("変更", driver.findElement(By.cssSelector("button[type='submit']")).getText());
 		getEvidence(new Object() {
 		}, "1");
-		// 検索結果がスクショ範囲に収まるようにスクロール
 		scrollTo("300");
 		getEvidence(new Object() {
 		}, "2");
@@ -153,7 +151,6 @@ public class Case16 {
 		assertEquals("変更", driver.findElement(By.cssSelector("button[type='submit']")).getText());
 		getEvidence(new Object() {
 		}, "1");
-		// 検索結果がスクショ範囲に収まるようにスクロール
 		scrollTo("300");
 		getEvidence(new Object() {
 		}, "2");
@@ -163,7 +160,7 @@ public class Case16 {
 	@Order(5)
 	@DisplayName("テスト05 20文字以上の変更パスワードを入力し「変更」ボタン押下")
 	void test05() {
-		driver.findElement(By.id("currentPassword")).sendKeys("StudentBD05");
+		driver.findElement(By.id("currentPassword")).sendKeys("StudentBD07");
 		driver.findElement(By.id("password")).sendKeys("01234567890123456789Ab");
 		driver.findElement(By.id("passwordConfirm")).sendKeys("01234567890123456789Ab");
 		driver.findElement(By.cssSelector("button[type='submit']")).click();
@@ -188,7 +185,6 @@ public class Case16 {
 		assertEquals("変更", driver.findElement(By.cssSelector("button[type='submit']")).getText());
 		getEvidence(new Object() {
 		}, "1");
-		// 検索結果がスクショ範囲に収まるようにスクロール
 		scrollTo("300");
 		getEvidence(new Object() {
 		}, "2");
@@ -198,14 +194,68 @@ public class Case16 {
 	@Order(6)
 	@DisplayName("テスト06 ポリシーに合わない変更パスワードを入力し「変更」ボタン押下")
 	void test06() {
-		// TODO ここに追加 
+		driver.findElement(By.id("currentPassword")).sendKeys("StudentBD07");
+		driver.findElement(By.id("password")).sendKeys("AAAAAAAAAA");
+		driver.findElement(By.id("passwordConfirm")).sendKeys("AAAAAAAAAA");
+		driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+		// モーダルウィンドウの出現を待ってからクリック
+		visibilityTimeout(By.className("modal-dialog"), 500);
+		driver.findElement(By.cssSelector("button[type='button'][id='upd-btn']")).click();
+
+		visibilityTimeout(By.className("navbar-header"), 500);
+		// タイトル 一致確認
+		assertEquals("パスワード変更 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("パスワード変更", driver.findElement(By.tagName("h2")).getText());
+		// 「新しいパスワード」のエラーメッセージ確認
+		String errorText2 = driver.findElements(By.className("col-lg-10")).get(1)
+				.findElement(By.cssSelector("ul li span.error")).getText();
+		assertTrue(errorText2.contains("「パスワード」には半角英数字のみ使用可能です。また、半角英大文字、半角英小文字、数字を含めた8～20文字を入力してください。"));
+		// 戻るボタン 一致確認
+		assertEquals("戻る",
+				driver.findElement(By.cssSelector("button[type='button'][onclick='history.back();']")).getText());
+		// 変更ボタン 一致確認
+		assertEquals("変更", driver.findElement(By.cssSelector("button[type='submit']")).getText());
+		getEvidence(new Object() {
+		}, "1");
+		scrollTo("300");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
 	@Order(7)
 	@DisplayName("テスト07 一致しない確認パスワードを入力し「変更」ボタン押下")
 	void test07() {
-		// TODO ここに追加
+		driver.findElement(By.id("currentPassword")).sendKeys("StudentBD07");
+		driver.findElement(By.id("password")).sendKeys("TruePass04");
+		driver.findElement(By.id("passwordConfirm")).sendKeys("WrongPass04");
+		driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+		// モーダルウィンドウの出現を待ってからクリック
+		visibilityTimeout(By.className("modal-dialog"), 500);
+		driver.findElement(By.cssSelector("button[type='button'][id='upd-btn']")).click();
+
+		visibilityTimeout(By.className("navbar-header"), 500);
+		// タイトル 一致確認
+		assertEquals("パスワード変更 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("パスワード変更", driver.findElement(By.tagName("h2")).getText());
+		// 「新しいパスワード」のエラーメッセージ確認
+		String errorText2 = driver.findElements(By.className("col-lg-10")).get(1)
+				.findElement(By.cssSelector("ul li span.error")).getText();
+		assertTrue(errorText2.contains("パスワードと確認パスワードが一致しません。"));
+		// 戻るボタン 一致確認
+		assertEquals("戻る",
+				driver.findElement(By.cssSelector("button[type='button'][onclick='history.back();']")).getText());
+		// 変更ボタン 一致確認
+		assertEquals("変更", driver.findElement(By.cssSelector("button[type='submit']")).getText());
+		getEvidence(new Object() {
+		}, "1");
+		scrollTo("300");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 }
