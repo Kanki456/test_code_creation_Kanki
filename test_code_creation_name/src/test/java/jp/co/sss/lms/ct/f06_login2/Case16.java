@@ -73,8 +73,8 @@ public class Case16 {
 		driver.findElement(By.name("loginId")).clear();
 
 		// ☆動作確認用 後で変える
-		driver.findElement(By.name("loginId")).sendKeys("StudentBD04");
-		driver.findElement(By.name("password")).sendKeys("StudentBD04");
+		driver.findElement(By.name("loginId")).sendKeys("StudentBD05");
+		driver.findElement(By.name("password")).sendKeys("StudentBD05");
 		driver.findElement(By.className("btn-primary")).click();
 
 		visibilityTimeout(By.className("navbar-header"), 500);
@@ -163,7 +163,35 @@ public class Case16 {
 	@Order(5)
 	@DisplayName("テスト05 20文字以上の変更パスワードを入力し「変更」ボタン押下")
 	void test05() {
-		// TODO ここに追加
+		driver.findElement(By.id("currentPassword")).sendKeys("StudentBD05");
+		driver.findElement(By.id("password")).sendKeys("01234567890123456789Ab");
+		driver.findElement(By.id("passwordConfirm")).sendKeys("01234567890123456789Ab");
+		driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+		// モーダルウィンドウの出現を待ってからクリック
+		visibilityTimeout(By.className("modal-dialog"), 500);
+		driver.findElement(By.cssSelector("button[type='button'][id='upd-btn']")).click();
+
+		visibilityTimeout(By.className("navbar-header"), 500);
+		// タイトル 一致確認
+		assertEquals("パスワード変更 | LMS", driver.getTitle());
+		// h2タグ 一致確認
+		assertEquals("パスワード変更", driver.findElement(By.tagName("h2")).getText());
+		// 「新しいパスワード」のエラーメッセージ確認
+		String errorText2 = driver.findElements(By.className("col-lg-10")).get(1)
+				.findElement(By.cssSelector("ul li span.error")).getText();
+		assertTrue(errorText2.contains("パスワードの長さが最大値(20)を超えています。"));
+		// 戻るボタン 一致確認
+		assertEquals("戻る",
+				driver.findElement(By.cssSelector("button[type='button'][onclick='history.back();']")).getText());
+		// 変更ボタン 一致確認
+		assertEquals("変更", driver.findElement(By.cssSelector("button[type='submit']")).getText());
+		getEvidence(new Object() {
+		}, "1");
+		// 検索結果がスクショ範囲に収まるようにスクロール
+		scrollTo("300");
+		getEvidence(new Object() {
+		}, "2");
 	}
 
 	@Test
